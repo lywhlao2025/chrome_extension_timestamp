@@ -20,6 +20,7 @@ type Strings = {
   placeholder: string;
   convert: string;
   addTz: string;
+  encourage: string;
   deleteConfirm: string;
   errTimestampEmpty: string;
   errTimestampNaN: string;
@@ -29,34 +30,36 @@ type Strings = {
 
 const STORAGE_KEY = "timezones";
 
-const PRESET_ZONES: { offsetMinutes: number; label: string }[] = [
-  { offsetMinutes: -12 * 60, label: "贝克岛" },
-  { offsetMinutes: -11 * 60, label: "纽埃" },
-  { offsetMinutes: -10 * 60, label: "檀香山" },
-  { offsetMinutes: -9 * 60, label: "阿拉斯加" },
-  { offsetMinutes: -8 * 60, label: "洛杉矶" },
-  { offsetMinutes: -7 * 60, label: "丹佛" },
-  { offsetMinutes: -6 * 60, label: "芝加哥" },
-  { offsetMinutes: -5 * 60, label: "纽约/多伦多" },
-  { offsetMinutes: -4 * 60, label: "圣保罗/大西洋" },
-  { offsetMinutes: -3 * 60, label: "布宜诺斯艾利斯" },
-  { offsetMinutes: -2 * 60, label: "南乔治亚" },
-  { offsetMinutes: -1 * 60, label: "亚速尔群岛" },
-  { offsetMinutes: 0, label: "伦敦" },
-  { offsetMinutes: 1 * 60, label: "柏林/巴黎" },
-  { offsetMinutes: 2 * 60, label: "雅典/开罗" },
-  { offsetMinutes: 3 * 60, label: "莫斯科/内罗毕" },
-  { offsetMinutes: 4 * 60, label: "迪拜" },
-  { offsetMinutes: 5 * 60, label: "伊斯兰堡" },
-  { offsetMinutes: 6 * 60, label: "达卡" },
-  { offsetMinutes: 7 * 60, label: "曼谷" },
-  { offsetMinutes: 8 * 60, label: "北京/新加坡" },
-  { offsetMinutes: 9 * 60, label: "东京/首尔" },
-  { offsetMinutes: 10 * 60, label: "悉尼" },
-  { offsetMinutes: 11 * 60, label: "所罗门群岛" },
-  { offsetMinutes: 12 * 60, label: "奥克兰" },
-  { offsetMinutes: 13 * 60, label: "汤加" },
-  { offsetMinutes: 14 * 60, label: "基里巴斯" }
+type PresetZone = { offsetMinutes: number; labelZh: string; labelEn: string };
+
+const PRESET_ZONES: PresetZone[] = [
+  { offsetMinutes: -12 * 60, labelZh: "贝克岛", labelEn: "Baker Island" },
+  { offsetMinutes: -11 * 60, labelZh: "纽埃", labelEn: "Niue" },
+  { offsetMinutes: -10 * 60, labelZh: "檀香山", labelEn: "Honolulu" },
+  { offsetMinutes: -9 * 60, labelZh: "阿拉斯加", labelEn: "Alaska" },
+  { offsetMinutes: -8 * 60, labelZh: "洛杉矶", labelEn: "Los Angeles" },
+  { offsetMinutes: -7 * 60, labelZh: "丹佛", labelEn: "Denver" },
+  { offsetMinutes: -6 * 60, labelZh: "芝加哥", labelEn: "Chicago" },
+  { offsetMinutes: -5 * 60, labelZh: "纽约/多伦多", labelEn: "New York/Toronto" },
+  { offsetMinutes: -4 * 60, labelZh: "圣保罗/大西洋", labelEn: "Sao Paulo/Atlantic" },
+  { offsetMinutes: -3 * 60, labelZh: "布宜诺斯艾利斯", labelEn: "Buenos Aires" },
+  { offsetMinutes: -2 * 60, labelZh: "南乔治亚", labelEn: "South Georgia" },
+  { offsetMinutes: -1 * 60, labelZh: "亚速尔群岛", labelEn: "Azores" },
+  { offsetMinutes: 0, labelZh: "伦敦", labelEn: "London" },
+  { offsetMinutes: 1 * 60, labelZh: "柏林/巴黎", labelEn: "Berlin/Paris" },
+  { offsetMinutes: 2 * 60, labelZh: "雅典/开罗", labelEn: "Athens/Cairo" },
+  { offsetMinutes: 3 * 60, labelZh: "莫斯科/内罗毕", labelEn: "Moscow/Nairobi" },
+  { offsetMinutes: 4 * 60, labelZh: "迪拜", labelEn: "Dubai" },
+  { offsetMinutes: 5 * 60, labelZh: "伊斯兰堡", labelEn: "Islamabad" },
+  { offsetMinutes: 6 * 60, labelZh: "达卡", labelEn: "Dhaka" },
+  { offsetMinutes: 7 * 60, labelZh: "曼谷", labelEn: "Bangkok" },
+  { offsetMinutes: 8 * 60, labelZh: "北京/新加坡", labelEn: "Beijing/Singapore" },
+  { offsetMinutes: 9 * 60, labelZh: "东京/首尔", labelEn: "Tokyo/Seoul" },
+  { offsetMinutes: 10 * 60, labelZh: "悉尼", labelEn: "Sydney" },
+  { offsetMinutes: 11 * 60, labelZh: "所罗门群岛", labelEn: "Solomon Islands" },
+  { offsetMinutes: 12 * 60, labelZh: "奥克兰", labelEn: "Auckland" },
+  { offsetMinutes: 13 * 60, labelZh: "汤加", labelEn: "Tonga" },
+  { offsetMinutes: 14 * 60, labelZh: "基里巴斯", labelEn: "Kiribati" }
 ];
 
 const DEFAULT_TZ: TimezoneEntry = {
@@ -75,6 +78,7 @@ function getStrings(isZh: boolean): Strings {
       placeholder: "如 1700000000 或 1700000000000",
       convert: "转换",
       addTz: "添加时区",
+      encourage: "鼓励一下",
       deleteConfirm: "确定删除该时区吗？",
       errTimestampEmpty: "请输入时间戳",
       errTimestampNaN: "不是有效数字",
@@ -87,6 +91,7 @@ function getStrings(isZh: boolean): Strings {
     placeholder: "e.g. 1700000000 or 1700000000000",
     convert: "Convert",
     addTz: "Add timezone",
+    encourage: "Say thanks",
     deleteConfirm: "Remove this timezone?",
     errTimestampEmpty: "Please enter a timestamp",
     errTimestampNaN: "Not a valid number",
@@ -103,9 +108,10 @@ function formatOffset(minutes: number) {
   return `UTC${sign}${hours}${mins ? `:${String(mins).padStart(2, "0")}` : ""}`;
 }
 
-function findPresetLabel(offsetMinutes: number) {
+function findPresetLabel(offsetMinutes: number, isZh: boolean) {
   const found = PRESET_ZONES.find((z) => z.offsetMinutes === offsetMinutes);
-  return found ? found.label : formatOffset(offsetMinutes);
+  if (!found) return formatOffset(offsetMinutes);
+  return isZh ? found.labelZh : found.labelEn;
 }
 
 type ParseTimestampResult = { millis: number } | { error: string };
@@ -279,7 +285,13 @@ function App() {
   const [lastTimestampMs, setLastTimestampMs] = useState<number | null>(null);
   const [highlight, setHighlight] = useState<HighlightState>({ timestamp: false, rows: [] });
   const [toast, setToast] = useState<string | null>(null);
-  const isZh = useMemo(() => navigator.language?.toLowerCase().startsWith("zh") ?? false, []);
+  const [confirmTarget, setConfirmTarget] = useState<TimezoneEntry | null>(null);
+  const [langOverride, setLangOverride] = useState<"auto" | "zh" | "en">("auto");
+  const isZh = useMemo(() => {
+    if (langOverride === "zh") return true;
+    if (langOverride === "en") return false;
+    return navigator.language?.toLowerCase().startsWith("zh") ?? false;
+  }, [langOverride]);
   const strings = useMemo(() => getStrings(isZh), [isZh]);
 
   useEffect(() => {
@@ -291,6 +303,16 @@ function App() {
     // Defer convert to next tick to ensure state is ready
     setTimeout(() => convert(true, loaded, now), 0);
   }, []);
+
+  useEffect(() => {
+    // 当语言切换时，同步预设区域的显示名称
+    setTimezones((prev) =>
+      prev.map((tz) => ({
+        ...tz,
+        label: findPresetLabel(tz.offsetMinutes, isZh)
+      }))
+    );
+  }, [isZh]);
 
   useEffect(() => {
     saveTimezones(timezones);
@@ -368,7 +390,9 @@ function App() {
 
   const handleOffsetChange = (id: string, offset: number) => {
     setTimezones((prev) => {
-      const next = prev.map((tz) => (tz.id === id ? { ...tz, offsetMinutes: offset, label: findPresetLabel(offset) } : tz));
+      const next = prev.map((tz) =>
+        tz.id === id ? { ...tz, offsetMinutes: offset, label: findPresetLabel(offset, isZh) } : tz
+      );
       // Re-render formatted times with updated offsets
       if (lastTimestampMs !== null) {
         const updated: Record<string, string> = {};
@@ -398,7 +422,7 @@ function App() {
     const offsetMinutes = 0;
     const newTz: TimezoneEntry = {
       id: newId,
-      label: findPresetLabel(offsetMinutes),
+      label: findPresetLabel(offsetMinutes, isZh),
       offsetMinutes,
       editableOffset: true
     };
@@ -411,8 +435,6 @@ function App() {
   };
 
   const handleRemoveTimezone = (id: string) => {
-    const ok = confirm(strings.deleteConfirm);
-    if (!ok) return;
     const filtered = timezones.filter((tz) => tz.id !== id);
     setTimezones(filtered);
     setTimeStrings((prev) => {
@@ -428,7 +450,19 @@ function App() {
   return (
     <div className="min-w-[340px] max-w-[560px] rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl space-y-3">
       <div className="space-y-2">
-        <div className="text-sm text-slate-500">{strings.inputLabel}</div>
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-slate-500">{strings.inputLabel}</div>
+          <select
+            className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 outline-none focus:ring-2 focus:ring-blue-200"
+            value={langOverride}
+            onChange={(e) => setLangOverride(e.target.value as "auto" | "zh" | "en")}
+            aria-label="Language"
+          >
+            <option value="auto">{isZh ? "跟随系统" : "Auto"}</option>
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+          </select>
+        </div>
         <div className="flex gap-2">
           <input
             className={`flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-base text-slate-900 outline-none focus:ring-2 focus:ring-blue-200 font-mono ${
@@ -453,26 +487,37 @@ function App() {
           const value = timeStrings[tz.id] ?? formatDateString(baseMs, tz.offsetMinutes);
           const highlightRow = highlight.rows.includes(tz.id);
           const options = PRESET_ZONES.filter(
-              (zone) => zone.offsetMinutes === tz.offsetMinutes || !usedOffsets.has(zone.offsetMinutes)
-            );
-            return (
-              <TimeRow
-                key={tz.id}
-                tz={tz}
-                index={idx}
-                value={value}
-                accent={accent}
-                options={options}
-                onTimeChange={(val) => handleTimeChange(tz.id, val)}
-                onOffsetChange={(val) => handleOffsetChange(tz.id, val)}
-                onRemove={idx === 0 ? undefined : () => handleRemoveTimezone(tz.id)}
-                highlight={highlightRow}
-              />
-            );
-          })}
+            (zone) => zone.offsetMinutes === tz.offsetMinutes || !usedOffsets.has(zone.offsetMinutes)
+          ).map((zone) => ({
+            offsetMinutes: zone.offsetMinutes,
+            label: isZh ? zone.labelZh : zone.labelEn
+          }));
+          return (
+            <TimeRow
+              key={tz.id}
+              tz={tz}
+              index={idx}
+              value={value}
+              accent={accent}
+              options={options}
+              onTimeChange={(val) => handleTimeChange(tz.id, val)}
+              onOffsetChange={(val) => handleOffsetChange(tz.id, val)}
+              onRemove={idx === 0 ? undefined : () => setConfirmTarget(tz)}
+              highlight={highlightRow}
+            />
+          );
+        })}
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <a
+          className="text-sm font-semibold text-slate-500 underline decoration-slate-300 underline-offset-4 hover:text-blue-600 hover:decoration-blue-300"
+          href="https://github.com/lywhlao2025/chrome_extension_timestamp"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {strings.encourage}
+        </a>
         <button
           className="rounded-lg border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-200"
           onClick={handleAddTimezone}
@@ -482,6 +527,35 @@ function App() {
       </div>
 
       {toast && <Toast text={toast} />}
+
+      {confirmTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-[1px]">
+          <div className="w-[260px] rounded-xl border border-slate-200 bg-white p-3 shadow-2xl">
+            <div className="flex flex-col items-center gap-2 text-center">
+              <div className="text-sm font-semibold text-slate-800">
+                {isZh ? `确定删除 ${confirmTarget.label} 时区吗？` : `Remove timezone ${confirmTarget.label}?`}
+              </div>
+              <div className="flex w-full gap-2 pt-1">
+                <button
+                  className="flex-1 rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-2 text-xs font-semibold text-slate-600 shadow-sm hover:bg-slate-200"
+                  onClick={() => setConfirmTarget(null)}
+                >
+                  取消
+                </button>
+                <button
+                  className="flex-1 rounded-lg bg-gradient-to-b from-blue-500 to-blue-600 px-2.5 py-2 text-xs font-semibold text-white shadow-lg hover:from-blue-600 hover:to-blue-700"
+                  onClick={() => {
+                    if (confirmTarget) handleRemoveTimezone(confirmTarget.id);
+                    setConfirmTarget(null);
+                  }}
+                >
+                  确定
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

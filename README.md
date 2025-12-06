@@ -52,4 +52,13 @@ npm run dev
 - 预设时区避免重复，可新增自定义时区。
 - 最近变更的行会高亮，便于确认操作。
 
-有改进想法欢迎提交 issue/PR。***
+有改进想法欢迎提交 issue/PR。
+
+## 支持 / Support
+如觉得工具有帮助，欢迎扫码鼓励（WeChat / Alipay）：
+
+**WeChat**  
+<img src="public/pay/wechat.JPG" alt="WeChat Pay" width="140" />
+
+**Alipay**  
+<img src="public/pay/ali.JPG" alt="Alipay" width="140" />
