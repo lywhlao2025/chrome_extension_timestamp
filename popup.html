@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timestamp Helper</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="card">
+      <section class="convert">
+        <div class="label">输入时间戳（秒或毫秒）</div>
+        <div class="input-row">
+          <input id="input" type="text" placeholder="如 1700000000 或 1700000000000" />
+          <button id="convert" class="primary">转换</button>
+        </div>
+        <div id="result" class="result mono muted">等待输入…</div>
+        <div class="actions">
+          <button id="add-tz" class="ghost">添加时区</button>
+        </div>
+      </section>
+    </div>
+    <div id="toast" role="status" aria-live="polite">Done</div>
+    <script src="popup.js"></script>
+  </body>
+</html>
