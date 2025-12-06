@@ -116,6 +116,12 @@ function findPresetLabel(offsetMinutes: number, isZh: boolean) {
 
 type ParseTimestampResult = { millis: number } | { error: string };
 
+/**
+ * Parse timestamp text (seconds or milliseconds).
+ * @param raw user input string
+ * @param strings localized strings for error messages
+ * @returns { millis } on success, otherwise { error }
+ */
 function parseTimestampInput(raw: string, strings: Strings): ParseTimestampResult {
   const trimmed = raw.trim();
   if (!trimmed) return { error: strings.errTimestampEmpty };
@@ -140,12 +146,19 @@ function toParts(timestampMs: number, offsetMinutes: number) {
   };
 }
 
+/**
+ * Format UTC ms + offset into "YYYY-MM-DD HH:mm:ss".
+ */
 function formatDateString(timestampMs: number, offsetMinutes: number) {
   const { year, month, day, hour, minute, second } = toParts(timestampMs, offsetMinutes);
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${year}-${pad(month)}-${pad(day)} ${pad(hour)}:${pad(minute)}:${pad(second)}`;
 }
 
+/**
+ * Parse a date string "YYYY-MM-DD HH:mm:ss" or "YYYY/MM/DD HH:mm:ss".
+ * @returns parts on success, or { error }
+ */
 function parseDateString(str: string, strings: Strings) {
   const trimmed = str.trim();
   const re = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})[ T](\d{1,2}):(\d{1,2}):(\d{1,2})$/;
@@ -164,12 +177,20 @@ function parseDateString(str: string, strings: Strings) {
   };
 }
 
+/**
+ * Convert parsed date fields + offset back to UTC milliseconds.
+ * @param parts date parts from parseDateString
+ * @param offsetMinutes timezone offset in minutes
+ */
 function partsToTimestamp(parts: ReturnType<typeof parseDateString>["parts"], offsetMinutes: number) {
   const { year, month, day, hour, minute, second } = parts!;
   const baseUtc = Date.UTC(year, month - 1, day, hour, minute, second);
   return baseUtc - offsetMinutes * 60 * 1000;
 }
 
+/**
+ * Return accent colors based on day segment (morning/afternoon/evening/night).
+ */
 function getTimeColors(timestampMs: number, offsetMinutes: number) {
   const d = new Date(timestampMs + offsetMinutes * 60 * 1000);
   const hour = d.getUTCHours() + d.getUTCMinutes() / 60;
@@ -336,6 +357,13 @@ function App() {
     return "millis" in parsed ? parsed.millis : Date.now();
   }, [lastTimestampMs, timestampInput, strings]);
 
+  /**
+   * 核心转换：根据当前输入或行内编辑，计算基准 UTC 毫秒并刷新所有行。
+   * @param suppressHighlight 是否跳过高亮动画
+   * @param tzList 要更新的时区列表（默认当前 state）
+   * @param overrideMs 外部指定的基准毫秒
+   * @param edited 来源（timestamp 输入 or row 编辑），用于决定高亮
+   */
   function convert(
     suppressHighlight = false,
     tzList: TimezoneEntry[] = timezones,
@@ -388,6 +416,9 @@ function App() {
     }
   }
 
+  /**
+   * 更新单行偏移，同时刷新格式化时间。
+   */
   const handleOffsetChange = (id: string, offset: number) => {
     setTimezones((prev) => {
       const next = prev.map((tz) =>
@@ -415,6 +446,9 @@ function App() {
     setLastEdited({ source: "timestamp" });
   };
 
+  /**
+   * 新增一个时区（默认 UTC+0），并用当前基准时间初始化显示。
+   */
   const handleAddTimezone = () => {
     const parsed = parseTimestampInput(timestampInput, strings);
     const base = lastTimestampMs ?? ("millis" in parsed ? parsed.millis : Date.now());
@@ -434,6 +468,9 @@ function App() {
     }));
   };
 
+  /**
+   * 删除指定时区行，同时清理已存的时间字符串。
+   */
   const handleRemoveTimezone = (id: string) => {
     const filtered = timezones.filter((tz) => tz.id !== id);
     setTimezones(filtered);
