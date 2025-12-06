@@ -19,7 +19,7 @@
 npm install
 npm run dev
 ```
-打开终端输出的本地地址（默认 http://localhost:5173）查看。
+打开终端输出的本地地址（默认http://localhost:5173）查看。
 
 ## 作为 Chrome 扩展使用
 1. `npm install`（首次）。
