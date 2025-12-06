@@ -29,7 +29,7 @@ function App() {
   const [timestampInput, setTimestampInput] = useState(() => INITIAL_NOW.toString()); // 顶部时间戳输入
   const [timeStrings, setTimeStrings] = useState<Record<string, string>>({}); // 每行显示的格式化时间
   const [lastEdited, setLastEdited] = useState<{ source: Source; rowId?: string }>({ source: "timestamp" }); // 上一次编辑来源
-  const [lastTimestampMs, setLastTimestampMs] = useState<number | null>(null); // 当前基准 UTC 毫秒
+  const [lastTimestampMs, setLastTimestampMs] = useState<number | null>(INITIAL_NOW); // 当前基准 UTC 毫秒
   const [highlight, setHighlight] = useState<HighlightState>({ timestamp: false, rows: [] }); // 高亮状态
   const [toast, setToast] = useState<string | null>(null); // toast 文案
   const [confirmTarget, setConfirmTarget] = useState<TimezoneEntry | null>(null); // 待删除行
@@ -109,12 +109,6 @@ function App() {
   );
 
   useEffect(() => {
-    // 初次挂载后刷新一次转换，保证 timeStrings 初始化
-    const currentMs = Number(timestampInput) || INITIAL_NOW;
-    setTimeout(() => convert(true, timezones, currentMs), 0);
-  }, [convert, timezones, timestampInput]);
-
-  useEffect(() => {
     saveTimezones(timezones);
   }, [timezones]);
 
@@ -125,11 +119,8 @@ function App() {
     }
   }, [highlight]);
 
-  const baseMs = useMemo(() => {
-    if (lastTimestampMs !== null) return lastTimestampMs;
-    const parsed = parseTimestampInput(timestampInput, strings);
-    return "millis" in parsed ? parsed.millis : INITIAL_NOW;
-  }, [lastTimestampMs, timestampInput, strings]);
+  // 基准毫秒，仅在显式转换后更新；输入变动不自动联动
+  const baseMs = useMemo(() => (lastTimestampMs !== null ? lastTimestampMs : INITIAL_NOW), [lastTimestampMs]);
 
   /**
    * 更新单行偏移，同时刷新格式化时间。

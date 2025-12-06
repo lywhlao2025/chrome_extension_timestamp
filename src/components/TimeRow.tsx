@@ -1,4 +1,5 @@
 // Time row component: displays timezone selector and editable time value.
+import { useEffect, useRef } from "react";
 import { formatOffset } from "../utils/time";
 import type { TimezoneEntry } from "../types";
 
@@ -29,6 +30,21 @@ export function TimeRow({
   dateFormatPlaceholder,
   selectAriaLabel
 }: TimeRowProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const caretRef = useRef<number | null>(null);
+  const prevValueRef = useRef<string>(value);
+
+  // 当父组件更新 value 时，如果仍在当前输入框内，恢复光标位置，避免跳到末尾
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    if (value !== prevValueRef.current && document.activeElement === el && caretRef.current !== null) {
+      const pos = Math.min(caretRef.current, value.length);
+      el.setSelectionRange(pos, pos);
+    }
+    prevValueRef.current = value;
+  }, [value]);
+
   const stripe = index % 2 === 0 ? "from-slate-50/70 to-slate-100/50" : "from-sky-50/60 to-sky-100/40";
 
   return (
@@ -68,11 +84,13 @@ export function TimeRow({
 
         <input
           type="text"
-          className={`w-full rounded-lg border border-slate-200 bg-white px-3 pt-3 pb-3 text-lg leading-6 font-mono text-slate-900 outline-none focus:ring-2 focus:ring-blue-200 ${
-            highlight ? "sun-highlight" : ""
-          }`}
+          className="w-full rounded-lg border border-slate-200 bg-white px-3 pt-3 pb-3 text-lg leading-6 font-mono text-slate-900 outline-none focus:ring-2 focus:ring-blue-200"
+          ref={inputRef}
           value={value}
-          onChange={(e) => onTimeChange(e.target.value)}
+          onChange={(e) => {
+            caretRef.current = e.target.selectionStart;
+            onTimeChange(e.target.value);
+          }}
           placeholder={dateFormatPlaceholder}
         />
       </div>
