@@ -3,17 +3,17 @@ import { formatOffset } from "../utils/time";
 import type { TimezoneEntry } from "../types";
 
 type TimeRowProps = {
-  tz: TimezoneEntry;
-  index: number;
-  value: string;
-  accent: { color1: string; color2: string };
-  options: { offsetMinutes: number; label: string }[];
-  onTimeChange: (v: string) => void;
-  onOffsetChange: (offset: number) => void;
-  onRemove?: () => void;
-  highlight: boolean;
-  dateFormatPlaceholder: string;
-  selectAriaLabel: string;
+  tz: TimezoneEntry; // 当前行的时区条目
+  index: number; // 行号，用于背景条纹
+  value: string; // 时间字符串
+  accent: { color1: string; color2: string }; // 背景装饰色
+  options: { offsetMinutes: number; label: string }[]; // 下拉可选时区
+  onTimeChange: (v: string) => void; // 时间输入回调
+  onOffsetChange: (offset: number) => void; // 选择时区回调
+  onRemove?: () => void; // 删除回调（可选）
+  highlight: boolean; // 是否高亮
+  dateFormatPlaceholder: string; // 输入框占位提示
+  selectAriaLabel: string; // 下拉框无障碍 label
 };
 
 export function TimeRow({

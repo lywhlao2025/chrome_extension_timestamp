@@ -1,11 +1,11 @@
 // Reusable confirmation modal.
 type ConfirmModalProps = {
-  open: boolean;
-  message: string;
-  confirmText: string;
-  cancelText: string;
-  onConfirm: () => void;
-  onCancel: () => void;
+  open: boolean; // 是否显示
+  message: string; // 提示文案
+  confirmText: string; // 确认按钮文案
+  cancelText: string; // 取消按钮文案
+  onConfirm: () => void; // 确认回调
+  onCancel: () => void; // 取消回调
 };
 
 export function ConfirmModal({ open, message, confirmText, cancelText, onConfirm, onCancel }: ConfirmModalProps) {

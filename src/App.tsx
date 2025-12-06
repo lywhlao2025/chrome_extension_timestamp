@@ -6,7 +6,7 @@ import { ConfirmModal } from "./components/ConfirmModal";
 import { TimeRow } from "./components/TimeRow";
 import { Toast } from "./components/Toast";
 import { loadSavedTimezones, saveTimezones } from "./services/storage";
-import { HighlightState, Source, TimezoneEntry } from "./types";
+import type { HighlightState, Source, TimezoneEntry } from "./types";
 import { formatDateString, formatOffset, getTimeColors, parseDateString, parseTimestampInput, partsToTimestamp } from "./utils/time";
 
 const INITIAL_NOW = Date.now();
@@ -25,15 +25,15 @@ const resolvePresetLabel = (offsetMinutes: number, isZh: boolean) =>
  * App: orchestrates timestamp parsing/formatting, multi-timezone editing, and UI layout.
  */
 function App() {
-  const [timezones, setTimezones] = useState<TimezoneEntry[]>(() => loadSavedTimezones([DEFAULT_TZ]));
-  const [timestampInput, setTimestampInput] = useState(() => INITIAL_NOW.toString());
-  const [timeStrings, setTimeStrings] = useState<Record<string, string>>({});
-  const [lastEdited, setLastEdited] = useState<{ source: Source; rowId?: string }>({ source: "timestamp" });
-  const [lastTimestampMs, setLastTimestampMs] = useState<number | null>(null);
-  const [highlight, setHighlight] = useState<HighlightState>({ timestamp: false, rows: [] });
-  const [toast, setToast] = useState<string | null>(null);
-  const [confirmTarget, setConfirmTarget] = useState<TimezoneEntry | null>(null);
-  const [langOverride, setLangOverride] = useState<"auto" | "zh" | "en">("auto");
+  const [timezones, setTimezones] = useState<TimezoneEntry[]>(() => loadSavedTimezones([DEFAULT_TZ])); // 已配置的时区列表
+  const [timestampInput, setTimestampInput] = useState(() => INITIAL_NOW.toString()); // 顶部时间戳输入
+  const [timeStrings, setTimeStrings] = useState<Record<string, string>>({}); // 每行显示的格式化时间
+  const [lastEdited, setLastEdited] = useState<{ source: Source; rowId?: string }>({ source: "timestamp" }); // 上一次编辑来源
+  const [lastTimestampMs, setLastTimestampMs] = useState<number | null>(null); // 当前基准 UTC 毫秒
+  const [highlight, setHighlight] = useState<HighlightState>({ timestamp: false, rows: [] }); // 高亮状态
+  const [toast, setToast] = useState<string | null>(null); // toast 文案
+  const [confirmTarget, setConfirmTarget] = useState<TimezoneEntry | null>(null); // 待删除行
+  const [langOverride, setLangOverride] = useState<"auto" | "zh" | "en">("auto"); // 语言覆盖
   const isZh = useMemo(() => {
     if (langOverride === "zh") return true;
     if (langOverride === "en") return false;
@@ -61,7 +61,7 @@ function App() {
       edited: { source: Source; rowId?: string } = lastEdited
     ) => {
       const prevTimes = { ...timeStrings };
-      let base = overrideMs ?? lastTimestampMs;
+      let base = overrideMs ?? lastTimestampMs; // 基准 UTC 毫秒：外部传入 > 已保存 > 当前输入
       if (edited.source === "row" && edited.rowId) {
         const currentStr = timeStrings[edited.rowId] ?? "";
         const parsed = parseDateString(currentStr, strings);
@@ -72,14 +72,14 @@ function App() {
         const rowTz = tzList.find((t) => t.id === edited.rowId);
         if (!rowTz) return;
         base = partsToTimestamp(parsed.parts!, rowTz.offsetMinutes);
-        setTimestampInput(Math.round(base).toString());
+        setTimestampInput(Math.round(base).toString()); // 反推的 UTC 写回顶部
       } else {
         const parsed = parseTimestampInput(timestampInput, strings);
         if ("error" in parsed) {
           showToast(parsed.error);
           return;
         }
-        base = parsed.millis;
+        base = parsed.millis; // 顶部输入解析结果
       }
 
       if (base == null) return;
