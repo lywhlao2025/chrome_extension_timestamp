@@ -114,12 +114,22 @@ button:active {
   grid-template-columns: minmax(150px, 1.4fr) minmax(200px, 2.2fr);
   align-items: start;
   gap: 12px;
-  padding: 12px;
+  padding: 12px 52px 12px 12px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: linear-gradient(180deg, #ffffff 0%, #f4f5f9 100%);
   position: relative;
   overflow: hidden;
+}
+
+.tz-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: transparent;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .tz-row::after {
@@ -132,18 +142,26 @@ button:active {
   background: radial-gradient(circle at 90% 10%, var(--accent1, rgba(0, 0, 0, 0.12)) 0%, var(--accent2, rgba(0, 0, 0, 0)) 65%, transparent 100%);
   pointer-events: none;
   opacity: 0.6;
-  z-index: 0;
+  z-index: 1;
 }
 
 .tz-row > * {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+}
+
+.tz-row:nth-child(odd)::before {
+  background: linear-gradient(180deg, rgba(245, 246, 248, 0.7) 0%, rgba(240, 242, 245, 0.5) 100%);
+}
+
+.tz-row:nth-child(even)::before {
+  background: linear-gradient(180deg, rgba(237, 243, 255, 0.7) 0%, rgba(232, 239, 252, 0.5) 100%);
 }
 
 .remove-btn {
   position: absolute;
   top: 8px;
-  right: 8px;
+  right: 12px;
   background: #f2f2f7;
   border: 1px solid var(--border);
   color: #8e8e93;
@@ -199,14 +217,17 @@ input.sun-highlight {
 
 .time-input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
+  margin: 8px 0 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: #fff;
   font-size: 14px;
   color: var(--text);
   font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  min-height: 44px;
+  min-height: 38px;
+  display: block;
+  line-height: 1.4;
 }
 
 @media (max-width: 420px) {

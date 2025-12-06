@@ -250,7 +250,7 @@ function highlightElements(elements) {
   });
 }
 
-function convertInput() {
+function convertInput(suppressHighlight = false) {
   let baseMs;
   const source = lastEditedSource;
   const sourceIndex = lastEditedIndex;
@@ -275,12 +275,14 @@ function convertInput() {
   lastTimestampMs = baseMs;
   lastEditedSource = "timestamp";
   renderResults(baseMs);
-  if (source === "timestamp") {
-    const rows = Array.from(resultEl.querySelectorAll(".tz-row"));
-    highlightElements(rows);
-  } else {
-    const rows = Array.from(resultEl.querySelectorAll(".tz-row")).filter((_, i) => i !== sourceIndex);
-    highlightElements([inputEl, ...rows]);
+  if (!suppressHighlight) {
+    if (source === "timestamp") {
+      const rows = Array.from(resultEl.querySelectorAll(".tz-row"));
+      highlightElements(rows);
+    } else {
+      const rows = Array.from(resultEl.querySelectorAll(".tz-row")).filter((_, i) => i !== sourceIndex);
+      highlightElements([inputEl, ...rows]);
+    }
   }
 }
 
@@ -305,7 +307,7 @@ function addTimezone() {
   renderResults(lastTimestampMs);
 }
 
-convertBtn.addEventListener("click", convertInput);
+convertBtn.addEventListener("click", () => convertInput());
 inputEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter") convertInput();
 });
@@ -330,7 +332,7 @@ function buildOffsetOptions(select, currentMinutes) {
 function initWithNow() {
   const now = Date.now();
   inputEl.value = now.toString();
-  convertInput();
+  convertInput(true);
 }
 
 loadTimezones();
