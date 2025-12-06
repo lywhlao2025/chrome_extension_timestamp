@@ -1,0 +1,4 @@
+{
+  "extName": { "message": "Timestamp Helper" },
+  "extDesc": { "message": "Quickly copy the current timestamp or convert between timestamps and readable time, supporting multiple time zones." }
+}
