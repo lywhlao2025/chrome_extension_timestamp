@@ -1,25 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import "./index.css";
-import { PRESET_ZONES, findPresetLabel as findPresetLabelRaw } from "./data/presets";
-import { DATE_FORMAT_HELP, getStrings } from "./i18n/strings";
-import { ConfirmModal } from "./components/ConfirmModal";
-import { TimeRow } from "./components/TimeRow";
-import { Toast } from "./components/Toast";
-import { loadSavedTimezones, saveTimezones } from "./services/storage";
-import type { HighlightState, Source, TimezoneEntry } from "./types";
-import { formatDateString, formatOffset, getTimeColors, parseDateString, parseTimestampInput, partsToTimestamp } from "./utils/time";
+import { useCallback, useEffect, useMemo, useState } from "react"; // React hooks
+import "./index.css"; // 全局样式
+import { PRESET_ZONES, findPresetLabel as findPresetLabelRaw } from "./data/presets"; // 时区预设
+import { DATE_FORMAT_HELP, getStrings } from "./i18n/strings"; // 多语言文案与日期格式占位
+import { ConfirmModal } from "./components/ConfirmModal"; // 删除确认弹窗
+import { TimeRow } from "./components/TimeRow"; // 单行时区组件
+import { Toast } from "./components/Toast"; // 底部提示
+import { loadSavedTimezones, saveTimezones } from "./services/storage"; // 存储读写
+import type { HighlightState, Source, TimezoneEntry } from "./types"; // 类型定义
+import { formatDateString, formatOffset, getTimeColors, parseDateString, parseTimestampInput, partsToTimestamp } from "./utils/time"; // 时间处理工具
 
-const INITIAL_NOW = Date.now();
+const INITIAL_NOW = Date.now(); // 初始时间戳，用于首次展示
 
 const DEFAULT_TZ: TimezoneEntry = {
-  id: "default",
-  label: "北京/新加坡",
-  offsetMinutes: 8 * 60,
-  editableOffset: true
+  id: "default", // 唯一标识
+  label: "北京/新加坡", // 初始显示名称
+  offsetMinutes: 8 * 60, // 默认 UTC+8
+  editableOffset: true // 允许修改偏移
 };
 
 const resolvePresetLabel = (offsetMinutes: number, isZh: boolean) =>
-  findPresetLabelRaw(offsetMinutes, isZh) ?? formatOffset(offsetMinutes);
+  findPresetLabelRaw(offsetMinutes, isZh) ?? formatOffset(offsetMinutes); // 根据语言取预设名，若无则用 UTC 偏移
 
 /**
  * App: orchestrates timestamp parsing/formatting, multi-timezone editing, and UI layout.
@@ -35,15 +35,15 @@ function App() {
   const [confirmTarget, setConfirmTarget] = useState<TimezoneEntry | null>(null); // 待删除行
   const [langOverride, setLangOverride] = useState<"auto" | "zh" | "en">("auto"); // 语言覆盖
   const isZh = useMemo(() => {
-    if (langOverride === "zh") return true;
-    if (langOverride === "en") return false;
-    return navigator.language?.toLowerCase().startsWith("zh") ?? false;
+    if (langOverride === "zh") return true; // 强制中文
+    if (langOverride === "en") return false; // 强制英文
+    return navigator.language?.toLowerCase().startsWith("zh") ?? false; // 跟随系统
   }, [langOverride]);
-  const strings = useMemo(() => getStrings(isZh), [isZh]);
+  const strings = useMemo(() => getStrings(isZh), [isZh]); // 当前语言文案
 
   const showToast = (text: string) => {
-    setToast(text);
-    setTimeout(() => setToast(null), 1400);
+    setToast(text); // 立即显示
+    setTimeout(() => setToast(null), 1400); // 1.4s 后自动关闭
   };
 
   /**
@@ -60,21 +60,21 @@ function App() {
       overrideMs?: number | null,
       edited: { source: Source; rowId?: string } = lastEdited
     ) => {
-      const prevTimes = { ...timeStrings };
+      const prevTimes = { ...timeStrings }; // 记录旧值用于差异高亮
       let base = overrideMs ?? lastTimestampMs; // 基准 UTC 毫秒：外部传入 > 已保存 > 当前输入
       if (edited.source === "row" && edited.rowId) {
-        const currentStr = timeStrings[edited.rowId] ?? "";
-        const parsed = parseDateString(currentStr, strings);
+        const currentStr = timeStrings[edited.rowId] ?? ""; // 当前行文本
+        const parsed = parseDateString(currentStr, strings); // 行文本解析为日期字段
         if (parsed.error) {
           showToast(parsed.error);
           return;
         }
-        const rowTz = tzList.find((t) => t.id === edited.rowId);
-        if (!rowTz) return;
-        base = partsToTimestamp(parsed.parts!, rowTz.offsetMinutes);
+        const rowTz = tzList.find((t) => t.id === edited.rowId); // 找到对应行的偏移
+        if (!rowTz) return; // 未找到则退出
+        base = partsToTimestamp(parsed.parts!, rowTz.offsetMinutes); // 反推 UTC 毫秒
         setTimestampInput(Math.round(base).toString()); // 反推的 UTC 写回顶部
       } else {
-        const parsed = parseTimestampInput(timestampInput, strings);
+        const parsed = parseTimestampInput(timestampInput, strings); // 顶部输入解析
         if ("error" in parsed) {
           showToast(parsed.error);
           return;
@@ -84,24 +84,24 @@ function App() {
 
       if (base == null) return;
 
-      const resolvedBase = base as number;
-      const updatedTimes: Record<string, string> = {};
-      const changedRows: string[] = [];
+      const resolvedBase = base as number; // 确认数值
+      const updatedTimes: Record<string, string> = {}; // 新的格式化时间字典
+      const changedRows: string[] = []; // 记录有变动的行
       tzList.forEach((tz) => {
-        updatedTimes[tz.id] = formatDateString(resolvedBase, tz.offsetMinutes);
-        if (prevTimes[tz.id] !== updatedTimes[tz.id]) changedRows.push(tz.id);
+        updatedTimes[tz.id] = formatDateString(resolvedBase, tz.offsetMinutes); // 生成格式化时间
+        if (prevTimes[tz.id] !== updatedTimes[tz.id]) changedRows.push(tz.id); // 差异用于高亮
       });
-      setTimeStrings(updatedTimes);
-      setLastTimestampMs(resolvedBase);
-      setLastEdited({ source: "timestamp" });
+      setTimeStrings(updatedTimes); // 更新所有行字符串
+      setLastTimestampMs(resolvedBase); // 保存基准毫秒
+      setLastEdited({ source: "timestamp" }); // 标记来源为顶部
 
       if (!suppressHighlight) {
         if (edited.source === "timestamp") {
-          setHighlight({ timestamp: false, rows: changedRows });
+          setHighlight({ timestamp: false, rows: changedRows }); // 顶部输入触发：仅行高亮
         } else {
-          const otherChangedRows = changedRows.filter((id) => id !== edited.rowId);
-          const timestampChanged = resolvedBase !== lastTimestampMs;
-          setHighlight({ timestamp: timestampChanged, rows: otherChangedRows });
+          const otherChangedRows = changedRows.filter((id) => id !== edited.rowId); // 其他行变化
+          const timestampChanged = resolvedBase !== lastTimestampMs; // 基准是否变
+          setHighlight({ timestamp: timestampChanged, rows: otherChangedRows }); // 行/顶部高亮控制
         }
       }
     },
@@ -109,10 +109,11 @@ function App() {
   );
 
   useEffect(() => {
-    saveTimezones(timezones);
+    saveTimezones(timezones); // 每次时区列表变更持久化到 localStorage
   }, [timezones]);
 
   useEffect(() => {
+    // 高亮存在时，500ms 后自动清除
     if (highlight.timestamp || highlight.rows.length) {
       const id = setTimeout(() => setHighlight({ timestamp: false, rows: [] }), 500);
       return () => clearTimeout(id);
@@ -128,7 +129,7 @@ function App() {
   const handleOffsetChange = (id: string, offset: number) => {
     setTimezones((prev) => {
       const next = prev.map((tz) =>
-        tz.id === id ? { ...tz, offsetMinutes: offset, label: resolvePresetLabel(offset, isZh) } : tz
+        tz.id === id ? { ...tz, offsetMinutes: offset, label: resolvePresetLabel(offset, isZh) } : tz // 更新偏移与展示名
       );
       // Re-render formatted times with updated offsets
       if (lastTimestampMs !== null) {
@@ -143,13 +144,13 @@ function App() {
   };
 
   const handleTimeChange = (id: string, value: string) => {
-    setTimeStrings((prev) => ({ ...prev, [id]: value }));
-    setLastEdited({ source: "row", rowId: id });
+    setTimeStrings((prev) => ({ ...prev, [id]: value })); // 更新该行文本
+    setLastEdited({ source: "row", rowId: id }); // 记录来源
   };
 
   const handleTimestampChange = (value: string) => {
-    setTimestampInput(value);
-    setLastEdited({ source: "timestamp" });
+    setTimestampInput(value); // 顶部输入修改
+    setLastEdited({ source: "timestamp" }); // 记录来源
   };
 
   /**
@@ -158,8 +159,8 @@ function App() {
   const handleAddTimezone = () => {
     const parsed = parseTimestampInput(timestampInput, strings);
     const base = lastTimestampMs ?? ("millis" in parsed ? parsed.millis : Date.now());
-    const newId = `tz-${Date.now()}`;
-    const offsetMinutes = 0;
+    const newId = `tz-${Date.now()}`; // 新行唯一 id
+    const offsetMinutes = 0; // 默认 UTC+0
     const newTz: TimezoneEntry = {
       id: newId,
       label: resolvePresetLabel(offsetMinutes, isZh),
@@ -178,8 +179,8 @@ function App() {
    * 删除指定时区行，同时清理已存的时间字符串。
    */
   const handleRemoveTimezone = (id: string) => {
-    const filtered = timezones.filter((tz) => tz.id !== id);
-    setTimezones(filtered);
+    const filtered = timezones.filter((tz) => tz.id !== id); // 过滤掉目标行
+    setTimezones(filtered); // 更新列表
     setTimeStrings((prev) => {
       const copy = { ...prev };
       delete copy[id];
@@ -191,10 +192,11 @@ function App() {
   const usedOffsets = new Set(timezones.map((t) => t.offsetMinutes));
 
   return (
+    // 主容器卡片
     <div className="min-w-[340px] max-w-[560px] rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl space-y-3">
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-slate-500">{strings.inputLabel}</div>
+          <div className="text-sm text-slate-500">{strings.inputLabel}</div> {/* 输入标签 */}
           <select
             className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 outline-none focus:ring-2 focus:ring-blue-200"
             value={langOverride}
@@ -236,6 +238,7 @@ function App() {
             label: isZh ? zone.labelZh : zone.labelEn
           }));
           return (
+            // 单行时区
             <TimeRow
               key={tz.id}
               tz={tz}
