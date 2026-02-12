@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Timestamp Helper",
-  "description": "Quickly copy the current timestamp or convert between timestamps and readable time.",
-  "version": "1.0.0",
+  "name": "__MSG_extName__",
+  "description": "__MSG_extDesc__",
+  "default_locale": "en",
+  "version": "1.0.1",
   "action": {
-    "default_title": "Timestamp Helper",
+    "default_title": "__MSG_extName__",
     "default_popup": "index.html"
   },
   "icons": {

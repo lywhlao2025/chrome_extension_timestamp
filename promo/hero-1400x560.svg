@@ -1,0 +1,56 @@
+<svg width="1400" height="560" viewBox="0 0 1400 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff9e2c" offset="0"/>
+      <stop stop-color="#ff6a00" offset="1"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#ffd08a" offset="0"/>
+      <stop stop-color="#ff8a00" offset="1"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#ffb347" offset="0"/>
+      <stop stop-color="#ff7a00" offset="1"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#001a3f" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <rect width="1400" height="560" fill="url(#bg)"/>
+  <rect x="110" y="80" width="1180" height="400" rx="32" fill="#2c170b" opacity="0.65"/>
+  <rect x="120" y="92" width="1160" height="380" rx="30" fill="#1f1209" opacity="0.7"/>
+  <rect x="140" y="120" width="750" height="320" rx="26" fill="#1f1209" stroke="url(#glow)" stroke-opacity="0.35" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="160" y="170" width="880" height="120" rx="28" fill="#120a04" opacity="0.72"/>
+  <text x="180" y="215" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="48" font-weight="800" fill="#fffaf3">时间戳助手 · Timestamp Helper</text>
+  <text x="180" y="248" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="700" fill="#ffe7cc">
+    一键复制 / 转换时间戳 · 多时区 · 离线本地 | Copy & convert timestamps · Multi time-zone · Offline secure
+  </text>
+  <text x="180" y="278" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="700" fill="#ffd8a1">
+    多语言 UI | Multi-language UI
+  </text>
+  <g transform="translate(180 280)">
+    <rect x="0" y="0" width="220" height="70" rx="16" fill="#2e1a0f" stroke="#ffb347" stroke-width="2"/>
+    <text x="20" y="42" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#ffe6c7">一键复制 | 1-Click Copy</text>
+    <rect x="250" y="0" width="260" height="70" rx="16" fill="#2e1a0f" stroke="#ff9e2c" stroke-width="2"/>
+    <text x="270" y="28" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="700" fill="#ffe6c7">转换 ↔ 可读时间 | Convert</text>
+    <text x="270" y="52" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#ffd8a1">无数学 · 无搜索 | No math, no search</text>
+  </g>
+  <g transform="translate(960 140)" filter="url(#shadow)">
+    <rect x="0" y="0" width="300" height="280" rx="28" fill="#3c2314" opacity="0.92"/>
+    <circle cx="150" cy="140" r="104" fill="#1f1209" stroke="#ffb347" stroke-width="6"/>
+    <path d="M150 76v70h64" fill="none" stroke="#ffd166" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="150" cy="146" r="12" fill="url(#accent)"/>
+    <text x="60" y="236" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="700" fill="#ffe6c7">
+      多时区 · 离线 · 精准 | Multi-zone · Offline · Precise
+    </text>
+  </g>
+  <g transform="translate(140 120)">
+    <rect x="0" y="0" width="180" height="180" rx="26" fill="#3c2314" opacity="0.75"/>
+    <rect x="18" y="24" width="144" height="10" rx="5" fill="#ffd8a1"/>
+    <rect x="18" y="46" width="120" height="10" rx="5" fill="#ffc36d" opacity="0.7"/>
+    <rect x="18" y="68" width="160" height="10" rx="5" fill="#ffb347" opacity="0.5"/>
+    <rect x="18" y="102" width="120" height="14" rx="7" fill="#ffb347" opacity="0.9"/>
+    <rect x="18" y="124" width="90" height="12" rx="6" fill="#ff9e2c" opacity="0.75"/>
+    <rect x="18" y="146" width="150" height="12" rx="6" fill="#ff9e2c" opacity="0.6"/>
+  </g>
+</svg>
